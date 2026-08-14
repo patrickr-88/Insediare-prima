@@ -135,15 +135,22 @@ class ApplicationDetails:
             rows.append(("Missing", ", ".join(self.missing_dependencies)))
 
         width = max(len(label) for label, _ in rows)
-        lines += [f"{label.ljust(width)}   {value}" for label, value in rows]
+        for label, value in rows:
+            # Paths are long enough to wrap in a narrow panel, which would break
+            # the column alignment — give them a line of their own instead.
+            if len(value) > 30:
+                lines += [label, f"    {value}"]
+            else:
+                lines.append(f"{label.ljust(width)}   {value}")
         return "\n".join(lines)
 
 
+#: Short for the healthy states, explicit for the ones needing action.
 _CHECKSUM_LABELS = {
     "verified": "verified (SHA-256 matches)",
-    "recorded": "recorded (verified before installing)",
-    "missing": "not recorded — run 'Update checksums'",
-    "mismatch": "MISMATCH — the file has changed since it was recorded",
+    "recorded": "recorded",
+    "missing": "not recorded — run Drive → Update Checksums",
+    "mismatch": "MISMATCH — the file changed since it was recorded",
 }
 
 

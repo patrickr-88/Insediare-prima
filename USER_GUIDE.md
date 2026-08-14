@@ -52,29 +52,8 @@ bin/USBInstaller --repository . --list   # command line
 
 ## The main window
 
-```
-WORKSHOP STANDARD BUILD
-Windows 11 Pro  ·  x64  ·  RECEPTION-PC  ·  Administrator: yes
-Drive: E:\
-────────────────────────────────────────────────────────────────────
-Available Software                     │ Details
-                                       │
-Browsers                               │ Mozilla Firefox  141.0
-☑ Mozilla Firefox  141.0  🔒           │ Update available (140.0 → 141.0)
-  Update available (140.0 → 141.0)     │
-☐ Google Chrome  127.0  🔒             │ Web browser
-  Up to date (127.0)                   │
-                                       │ Category        Browsers
-Utilities                              │ On this drive   141.0
-☑ 7-Zip  25.01  🔒                     │ Installed       140.0
-  Not installed                        │ Location        C:\Program Files\…
-                                       │ Installer       installers/windows/…
-────────────────────────────────────── │ Type            EXE
-2 of 3 selected                        │ Size            62.4 MB
-       [All] [None] [Add Application…] │ Arguments       /S
-              [Review Installation]    │ Administrator   required
-                                       │ Checksum        verified
-```
+![The main window](docs/screenshots/01-main-window.png)
+
 
 **The header** tells you what the tool detected: operating system, CPU
 architecture, computer name, and whether administrator rights are actually
@@ -102,6 +81,8 @@ machine:
 which file runs, with which arguments, how big it is, whether it needs
 administrator rights, how the tool detects it, whether its checksum is
 verified, and what is installed right now — including where.
+
+![Details for software that is not installed yet](docs/screenshots/02-details-not-installed.png)
 
 ---
 
@@ -132,6 +113,8 @@ Applications:
 Administrator privileges are required: YES (held)
 ```
 
+![The installation plan](docs/screenshots/03-review-installation.png)
+
 Read it. This is the last point at which nothing has changed. **Cancel** goes
 back to the list; **Install** starts.
 
@@ -146,6 +129,8 @@ Mozilla Firefox: SUCCESS
 VLC media player: SUCCESS
 Adobe Acrobat Reader: FAILED — installer exited with code 1603
 ```
+
+![Installation in progress](docs/screenshots/05-installing.png)
 
 **A failure never stops the run.** The remaining applications still install.
 
@@ -166,6 +151,8 @@ Failed:     1
 Installation log: E:\logs\2026-08-14_13-45-22
 ```
 
+![The final report](docs/screenshots/06-results.png)
+
 If anything failed, a **Retry** button re-runs just those applications.
 
 After each installation the tool re-checks the machine to confirm the software
@@ -181,6 +168,8 @@ genuinely common vendor bug.
 
 This changes **the USB drive**, not the computer in front of you. Nothing is
 installed by adding.
+
+![Adding an application to the drive](docs/screenshots/04-add-application.png)
 
 1. **Choose Windows installer…** / **Choose macOS installer…** and pick the
    file you downloaded. The tool works out the installer type from the
@@ -238,13 +227,21 @@ any computer.
 | --- | --- |
 | Add Application… | Put new software on the drive (above) |
 | Remove Application… | Take software off the drive |
-| Validate Drive… | Full check: paths, file types, dependencies, checksums |
+| Validate Drive… | Full check: paths, file types, dependencies, checksums (below) |
 | Update Checksums | Re-hash every installer — run after replacing files |
 | Reload Drive | Re-read the drive after editing it elsewhere |
 | Where Are My Logs? | The current run's log directory |
 
+![Drive validation](docs/screenshots/07-validate-drive.png)
+
 Help → **This Computer** shows everything detected about the machine, which is
 the first thing to paste into a ticket.
+
+> The screenshots above were captured on Linux, which is what the test
+> environment can render headlessly. Tk uses each platform's native widget
+> theme, so on Windows and macOS the same layout appears with that platform's
+> buttons, fonts and title bars — the content and behaviour are identical.
+> `docs/screenshots/README.md` has the full set.
 
 ---
 

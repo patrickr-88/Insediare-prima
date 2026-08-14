@@ -51,8 +51,14 @@ class AuthoringError(InstallerError):
 
 
 def suggest_id(name: str) -> str:
-    """Turn a display name into a usable application id (``7-Zip`` → ``7-zip``)."""
-    slug = _ID_ALLOWED.sub("-", str(name).strip().lower()).strip("-.")
+    """Turn a display name into a usable application id (``7-Zip`` → ``7-zip``).
+
+    ``+`` becomes ``plus`` first, so ``Notepad++`` suggests ``notepadplusplus``
+    rather than a bare ``notepad`` — the convention these ids follow in
+    practice.
+    """
+    text = str(name).strip().lower().replace("+", "plus")
+    slug = _ID_ALLOWED.sub("-", text).strip("-.")
     return slug or "application"
 
 

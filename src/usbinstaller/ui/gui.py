@@ -682,7 +682,7 @@ class AddApplicationDialog(tk.Toplevel):
         self.sources: dict[OS, Path] = {}
 
         self.title("Add Application to this Drive")
-        self.geometry("660x660")
+        self.geometry("700x670")
         self.transient(parent)
         self.grab_set()
 
@@ -788,7 +788,7 @@ class AddApplicationDialog(tk.Toplevel):
         row = self._entry(container, row, "Silent arguments", self.arguments_var)
         ttk.Label(
             container,
-            text="e.g.  /S    or    /VERYSILENT /NORESTART    (leave empty if unsure)",
+            text="e.g.  /S    or    /VERYSILENT /NORESTART    — leave empty if unsure",
             foreground=MUTED,
         ).grid(row=row, column=1, columnspan=2, sticky="w")
         row += 1

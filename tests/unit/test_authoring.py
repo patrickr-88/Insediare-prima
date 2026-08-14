@@ -61,9 +61,10 @@ class TestSuggestions:
         [
             ("7-Zip", "7-zip"),
             ("Mozilla Firefox", "mozilla-firefox"),
-            ("Notepad++", "notepad"),
+            ("Notepad++", "notepadplusplus"),
             ("  VLC  ", "vlc"),
             ("!!!", "application"),
+            ("C++ Runtime", "cplusplus-runtime"),
             ("Adobe Acrobat Reader DC", "adobe-acrobat-reader-dc"),
         ],
     )

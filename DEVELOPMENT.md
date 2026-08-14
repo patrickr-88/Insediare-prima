@@ -170,6 +170,27 @@ Version compatibility: `CONFIG_SCHEMA_VERSION` in `version.py` gates
 `applications.json`. A drive written for a newer schema is refused with a clear
 message rather than partially understood; older schemas keep working.
 
+## Screenshots
+
+`docs/screenshots/` is regenerated from the running application, never drawn by
+hand:
+
+```bash
+# Linux, headless
+sudo apt-get install -y python3-tk xvfb openbox
+python -m pip install mss pillow
+xvfb-run -a --server-args="-screen 0 1500x1100x24" \
+    sh -c "openbox & sleep 1; python tools/capture_screenshots.py docs/screenshots"
+
+# Windows / macOS — no Xvfb needed, and matches what technicians really see
+python tools/capture_screenshots.py docs/screenshots
+```
+
+The script builds a throwaway drive with placeholder installers and a simulated
+Windows machine, so the captures show real statuses (update available, up to
+date, newer installed, installer missing) without touching anything. Re-run it
+whenever the interface changes.
+
 ## Demo repository
 
 ```bash

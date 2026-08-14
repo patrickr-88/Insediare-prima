@@ -20,6 +20,10 @@ usbinstaller --install firefox vscode   # install a selection
 usbinstaller --retry                    # re-run what failed last time
 ```
 
+![The main window](docs/screenshots/01-main-window.png)
+
+More screenshots: [`docs/screenshots/`](docs/screenshots/).
+
 ---
 
 ## Contents
