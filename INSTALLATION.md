@@ -1,5 +1,10 @@
 # Installation and use
 
+> **Building a drive from scratch?** [USB_SETUP.md](USB_SETUP.md) walks through
+> it step by step.
+> **Using a drive someone handed you?** [USER_GUIDE.md](USER_GUIDE.md) covers
+> the interface, including adding software through the GUI.
+
 ## A. Preparing a USB drive (done once, by whoever owns the drive)
 
 ### 1. Format the drive

@@ -8,6 +8,11 @@ The central design rule: **the engine and the software repository are
 separate.** Swapping Firefox 140 for Firefox 145, or adding a new application,
 is a data change on the drive — the application's source code never changes.
 
+The graphical interface launches straight from the drive: it reports what the
+computer is, what each installer will actually do, and what is already
+installed — and it can add new software to the drive without hand-editing JSON.
+The command line does the same work headlessly:
+
 ```
 usbinstaller --list                     # what can be installed here
 usbinstaller --install-all --dry-run    # full plan, zero changes
@@ -21,7 +26,9 @@ usbinstaller --retry                    # re-run what failed last time
 
 | Document | What it covers |
 | --- | --- |
-| [INSTALLATION.md](INSTALLATION.md) | Preparing a USB drive, running the tool |
+| **[USB_SETUP.md](USB_SETUP.md)** | **Building a deployment drive, step by step** |
+| **[USER_GUIDE.md](USER_GUIDE.md)** | **Using the drive and the GUI, for technicians** |
+| [INSTALLATION.md](INSTALLATION.md) | Installing and running the tool |
 | [CONFIGURATION.md](CONFIGURATION.md) | Full configuration schema reference |
 | [ADDING_SOFTWARE.md](ADDING_SOFTWARE.md) | Recipes for adding/replacing software |
 | [SECURITY.md](SECURITY.md) | Threat model and the controls that enforce it |
@@ -95,9 +102,11 @@ usbinstaller/
 ├── installers/          Installer abstraction + one class per package format
 ├── engine/              Dependency resolution, planning, execution
 ├── logging_session.py   Per-run structured logs with secret redaction
+├── config/authoring.py  The only writer of applications.json (GUI edits)
+├── engine/details.py    Per-application facts for the information panel
 ├── app.py               Service layer shared by both front-ends
 ├── cli.py               Command-line interface
-├── ui/gui.py            Tkinter interface
+├── ui/gui.py            Tkinter interface (information, install, extend)
 └── repository_manager.py  Drive maintenance (never touches the target machine)
 ```
 
@@ -201,7 +210,7 @@ See [SECURITY.md](SECURITY.md) for the full model.
 
 ## Status
 
-433+ automated tests, 92% statement/branch coverage of the engine, CI on
+560+ automated tests, 92% statement/branch coverage of the engine, CI on
 Windows, macOS Intel and macOS Apple Silicon. See [TESTING.md](TESTING.md).
 
 Licensed under the MIT licence.

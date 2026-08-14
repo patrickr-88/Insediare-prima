@@ -22,7 +22,8 @@ src/usbinstaller/
 ├── config/
 │   ├── catalogue.py       JSON → Application models (the trust boundary).
 │   ├── settings.py        settings.json.
-│   └── validator.py       Collects findings; never raises for data problems.
+│   ├── validator.py       Collects findings; never raises for data problems.
+│   └── authoring.py       The ONLY writer of applications.json.
 ├── sysdetect/
 │   ├── system.py          SystemProbe seam + OS/arch/disk detection.
 │   └── privileges.py      Admin state; never elevates silently.
@@ -36,12 +37,13 @@ src/usbinstaller/
 │   └── macos.py           dmg, pkg, app, shell.
 ├── engine/
 │   ├── dependencies.py    Iterative topological sort + cycle reporting.
+│   ├── details.py         Per-application facts for the UI (read-only).
 │   ├── planner.py         Read-only: decides what would happen.
 │   └── executor.py        The only component that modifies the machine.
 ├── logging_session.py     Per-run log directory, redaction, retention.
 ├── app.py                 Service layer shared by CLI and GUI.
 ├── cli.py                 Command-line interface.
-├── ui/gui.py              Tkinter interface.
+├── ui/gui.py              Tkinter view only — no logic worth testing lives here.
 └── repository_manager.py  Drive maintenance.
 ```
 
@@ -65,6 +67,12 @@ continues. Exceptions are for programmer errors and genuinely unusable input.
 **One subprocess implementation.** Everything goes through `ProcessRunner`:
 `shell=False`, argv vectors, validated executables, timeouts, captured and
 truncated output, scrubbed environment. Never call `subprocess` directly.
+
+**One catalogue writer.** Everything that changes `applications.json` goes
+through `config/authoring.py`, which re-parses the edited document before
+writing it, writes atomically with a `.bak`, and rolls back copied files if any
+step fails. The GUI holds no such logic — if a behaviour cannot be tested
+headlessly, it is in the wrong module.
 
 ## Extending
 

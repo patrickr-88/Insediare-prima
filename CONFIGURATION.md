@@ -10,6 +10,9 @@ Two files, both in `config/` on the USB drive:
 A machine-readable JSON Schema is available at
 [`docs/schema/applications.schema.json`](docs/schema/applications.schema.json).
 
+The GUI's *Add Application…* writes this same file for you (keeping a `.bak`
+of the previous version), so hand-editing is optional.
+
 Validate after every edit:
 
 ```bash

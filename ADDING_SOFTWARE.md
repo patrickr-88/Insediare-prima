@@ -1,6 +1,16 @@
 # Adding and replacing software
 
-Adding software takes exactly two steps and **never** requires a code change:
+Two ways to do this, both of which are data changes — neither **ever** requires
+a code change:
+
+- **In the GUI** — *Drive → Add Application…* picks the installer, copies it
+  onto the drive, writes the catalogue entry and records the checksum. See
+  [USER_GUIDE.md](USER_GUIDE.md#adding-software-to-the-drive). Best for one-off
+  additions at a workbench.
+- **By hand**, as described below. Best for bulk edits, scripted drive builds
+  and anything you want to review in version control.
+
+By hand, it is exactly two steps:
 
 1. Copy the installer onto the drive.
 2. Add or edit an entry in `config/applications.json`.

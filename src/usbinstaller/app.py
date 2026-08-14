@@ -11,9 +11,12 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .detection.base import DetectionContext
+from .config.authoring import CatalogueEditor
+from .detection.base import DetectionContext, detect_installed
+from .engine.details import ApplicationDetails, describe
 from .engine.executor import Executor, retry_items
 from .engine.planner import Planner
+from .errors import ConfigSchemaError
 from .installers.base import InstallContext
 from .installers.process import ProcessRunner
 from .logging_session import LogSession, failed_ids, latest_session, prune_sessions
@@ -112,6 +115,66 @@ class InstallerApp:
 
     def privileges_for(self, plan: InstallationPlan) -> PrivilegeRequirement:
         return requirement_for(self.system, plan.items)
+
+    # -- information -----------------------------------------------------
+
+    def details_for(
+        self, app_id: str, *, detect: bool = True, verify_checksum: bool = False
+    ) -> ApplicationDetails:
+        """Everything the interface shows about one application.
+
+        Detection is run on demand (``detect=False`` keeps it purely static),
+        which is what lets the GUI populate its list instantly and fill in
+        "what is installed" as the technician clicks through.
+        """
+        application = self.repository.catalogue.get(app_id)
+        if application is None:
+            raise ConfigSchemaError(f"unknown application id: {app_id}")
+        installed = (
+            detect_installed(application, self.detection, self.system.os)
+            if detect
+            else None
+        )
+        return describe(
+            application,
+            self.repository,
+            self.system,
+            installed,
+            verify_checksum=verify_checksum,
+        )
+
+    def all_details(self, *, detect: bool = False) -> list[ApplicationDetails]:
+        """Details for every catalogue entry, compatible or not."""
+        return [
+            self.details_for(app.id, detect=detect)
+            for app in self.repository.catalogue
+        ]
+
+    # -- authoring -------------------------------------------------------
+
+    @property
+    def editor(self) -> CatalogueEditor:
+        """Write access to the catalogue (used by the GUI's Add Application)."""
+        return CatalogueEditor(self.repository)
+
+    def reload(self) -> InstallerApp:
+        """Re-read the drive after it has been edited, keeping this machine's
+        detected state and log session."""
+        return InstallerApp(
+            repository=Repository.load(self.repository.root),
+            system=self.system,
+            dry_run=self.dry_run,
+            log=self.log,
+            runner=self.runner,
+        )
+
+    def validate(self, *, check_checksums: bool = False):
+        """Validate the drive; the GUI shows the report verbatim."""
+        from .config.validator import validate_repository
+
+        return validate_repository(
+            self.repository.root, check_checksums=check_checksums
+        )
 
     # -- execution -------------------------------------------------------
 
