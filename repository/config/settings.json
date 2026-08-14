@@ -1,0 +1,13 @@
+{
+  "repository_name": "Workshop Standard Build",
+  "strict_checksums": false,
+  "warn_on_missing_checksum": true,
+  "block_on_checksum_mismatch": true,
+  "default_timeout_seconds": 1800,
+  "log_retention": 50,
+  "minimum_free_disk_mb": 2048,
+  "require_confirmation": true,
+  "continue_on_failure": true,
+  "auto_include_dependencies": true,
+  "auto_retry_count": 0
+}

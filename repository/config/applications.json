@@ -1,0 +1,229 @@
+{
+  "schema_version": 1,
+  "applications": [
+    {
+      "id": "firefox",
+      "name": "Mozilla Firefox",
+      "version": "141.0",
+      "description": "Web browser",
+      "category": "Browsers",
+      "enabled": true,
+      "version_scheme": "numeric",
+      "windows": {
+        "installer": "installers/windows/firefox/FirefoxSetup.exe",
+        "type": "exe",
+        "arguments": ["/S"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^Mozilla Firefox"
+        }
+      },
+      "macos": {
+        "installer": "installers/macos/firefox/Firefox.dmg",
+        "type": "dmg",
+        "app_bundle": "Firefox.app",
+        "requires_admin": true,
+        "detection": {
+          "method": "macos_app_bundle",
+          "bundle": "Firefox.app"
+        }
+      }
+    },
+    {
+      "id": "chrome",
+      "name": "Google Chrome",
+      "version": "127.0.6533.100",
+      "description": "Web browser",
+      "category": "Browsers",
+      "enabled": true,
+      "selected_by_default": false,
+      "version_scheme": "numeric",
+      "windows": {
+        "installer": "installers/windows/chrome/GoogleChromeStandaloneEnterprise64.msi",
+        "type": "msi",
+        "arguments": ["/qn", "/norestart"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^Google Chrome$"
+        }
+      },
+      "macos": {
+        "installer": "installers/macos/chrome/GoogleChrome.dmg",
+        "type": "dmg",
+        "app_bundle": "Google Chrome.app",
+        "requires_admin": true,
+        "detection": {
+          "method": "macos_app_bundle",
+          "bundle": "Google Chrome.app"
+        }
+      }
+    },
+    {
+      "id": "7zip",
+      "name": "7-Zip",
+      "version": "25.01",
+      "description": "File archiver",
+      "category": "Utilities",
+      "version_scheme": "numeric",
+      "windows": {
+        "installer": "installers/windows/7zip/7z2501-x64.exe",
+        "type": "exe",
+        "arguments": ["/S"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^7-Zip"
+        }
+      }
+    },
+    {
+      "id": "vlc",
+      "name": "VLC media player",
+      "version": "3.0.21",
+      "description": "Media player",
+      "category": "Media",
+      "version_scheme": "semver",
+      "windows": {
+        "installer": "installers/windows/vlc/vlc-3.0.21-win64.exe",
+        "type": "exe",
+        "arguments": ["/L=1033", "/S"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^VLC media player"
+        }
+      },
+      "macos": {
+        "installer": "installers/macos/vlc/vlc-3.0.21-universal.dmg",
+        "type": "dmg",
+        "app_bundle": "VLC.app",
+        "requires_admin": true,
+        "detection": {
+          "method": "macos_app_bundle",
+          "bundle": "VLC.app"
+        }
+      }
+    },
+    {
+      "id": "vscode",
+      "name": "Visual Studio Code",
+      "version": "1.92.0",
+      "description": "Source code editor",
+      "category": "Development",
+      "version_scheme": "semver",
+      "windows": {
+        "installer": "installers/windows/vscode/VSCodeSetup-x64.exe",
+        "type": "exe",
+        "arguments": [
+          "/VERYSILENT",
+          "/NORESTART",
+          "/MERGETASKS=!runcode,addcontextmenufiles,addtopath"
+        ],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^Microsoft Visual Studio Code"
+        }
+      },
+      "macos": {
+        "installer": "installers/macos/vscode/VSCode-darwin-universal.zip",
+        "type": "app",
+        "app_bundle": "Visual Studio Code.app",
+        "requires_admin": true,
+        "detection": {
+          "method": "macos_app_bundle",
+          "bundle": "Visual Studio Code.app"
+        }
+      }
+    },
+    {
+      "id": "adobe-reader",
+      "name": "Adobe Acrobat Reader",
+      "version": "24.002.20933",
+      "description": "PDF reader",
+      "category": "Documents",
+      "version_scheme": "numeric",
+      "prerequisites": [
+        {
+          "type": "min_free_disk_mb",
+          "value": 1024,
+          "message": "Acrobat Reader needs at least 1 GB of free disk space."
+        }
+      ],
+      "windows": {
+        "installer": "installers/windows/adobe-reader/AcroRdrDC.exe",
+        "type": "exe",
+        "arguments": ["/sAll", "/rs", "/msi", "EULA_ACCEPT=YES"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "Adobe Acrobat"
+        }
+      },
+      "macos": {
+        "installer": "installers/macos/adobe-reader/AcroRdrDC.pkg",
+        "type": "pkg",
+        "requires_admin": true,
+        "detection": {
+          "method": "macos_app_bundle",
+          "bundle": "Adobe Acrobat Reader.app"
+        }
+      }
+    },
+    {
+      "id": "zoom",
+      "name": "Zoom Workplace",
+      "version": "6.1.6",
+      "description": "Video conferencing",
+      "category": "Communication",
+      "version_scheme": "numeric",
+      "windows": {
+        "installer": "installers/windows/zoom/ZoomInstallerFull.msi",
+        "type": "msi",
+        "arguments": ["/qn", "/norestart"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^Zoom"
+        }
+      },
+      "macos": {
+        "installer": "installers/macos/zoom/Zoom.pkg",
+        "type": "pkg",
+        "requires_admin": true,
+        "detection": {
+          "method": "macos_pkg_receipt",
+          "package_id": "us.zoom.pkg.videomeeting"
+        }
+      }
+    },
+    {
+      "id": "notepadplusplus",
+      "name": "Notepad++",
+      "version": "8.6.9",
+      "description": "Text editor (Windows only)",
+      "category": "Utilities",
+      "version_scheme": "numeric",
+      "windows": {
+        "installer": "installers/windows/notepadplusplus/npp.8.6.9.Installer.x64.exe",
+        "type": "exe",
+        "arguments": ["/S"],
+        "architectures": ["x64"],
+        "requires_admin": true,
+        "detection": {
+          "method": "windows_registry",
+          "display_name": "^Notepad\\+\\+"
+        }
+      }
+    }
+  ]
+}

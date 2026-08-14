@@ -1,0 +1,94 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "usbinstaller"
+version = "1.0.0"
+description = "Portable, configuration-driven software deployment from a USB drive (Windows + macOS)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "IT Deployment Tooling" }]
+keywords = ["deployment", "installer", "usb", "windows", "macos", "it"]
+classifiers = [
+  "Environment :: Console",
+  "Environment :: MacOS X",
+  "Environment :: Win32 (MS Windows)",
+  "Intended Audience :: System Administrators",
+  "Operating System :: MacOS :: MacOS X",
+  "Operating System :: Microsoft :: Windows",
+  "Programming Language :: Python :: 3.11",
+  "Topic :: System :: Installation/Setup",
+]
+# No runtime dependencies: the engine is standard library only, which is what
+# makes the frozen binary small and the supply chain trivial to audit.
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "pytest-cov>=5.0",
+  "ruff>=0.6",
+  "mypy>=1.10",
+]
+build = ["pyinstaller>=6.6"]
+
+[project.scripts]
+usbinstaller = "usbinstaller.cli:main"
+repository-manager = "usbinstaller.repository_manager:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra --strict-markers"
+markers = [
+  "windows: requires a real Windows host",
+  "macos: requires a real macOS host",
+  "slow: takes more than a second",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["usbinstaller"]
+omit = [
+  # The GUI needs a display and a human; it is exercised manually per
+  # docs/TESTING.md rather than counted towards the unit-test target.
+  "*/usbinstaller/ui/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "if __name__ == .__main__.:",
+]
+
+[tool.ruff]
+line-length = 95
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+ignore = [
+  "S101",  # asserts are fine in this codebase and required in tests
+  "B008",
+  # `class OS(str, Enum)` is deliberate: members must compare and serialise as
+  # plain strings for JSON output and configuration parsing.
+  "UP042",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "E501"]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["usbinstaller"]
+mypy_path = "src"
+ignore_missing_imports = true
+warn_unused_ignores = false

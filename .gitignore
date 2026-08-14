@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# Runtime output on a working drive
+repository/logs/*/
+repository/bin/*
+!repository/bin/README.md
+
+# Vendor installers are never committed
+repository/installers/**/*
+!repository/installers/**/.gitkeep
+
+.DS_Store
+Thumbs.db

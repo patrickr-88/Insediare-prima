@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/usbinstaller/applications.schema.json",
+  "title": "USB Software Installer application catalogue",
+  "description": "Schema for config/applications.json. Editor tooling can use this for completion; the authoritative validator is 'usbinstaller --validate-config', which additionally checks paths, checksums, dependency cycles and file types.",
+  "type": "object",
+  "required": ["applications"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "default": 1,
+      "description": "Refused if newer than the application understands."
+    },
+    "applications": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/application" }
+    }
+  },
+  "$defs": {
+    "application": {
+      "type": "object",
+      "required": ["id"],
+      "anyOf": [{ "required": ["windows"] }, { "required": ["macos"] }],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._-]+$",
+          "description": "Unique identifier used on the command line."
+        },
+        "name": { "type": "string" },
+        "version": {
+          "type": "string",
+          "description": "The version present on the USB drive."
+        },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "enabled": { "type": "boolean", "default": true },
+        "selected_by_default": { "type": "boolean", "default": true },
+        "version_scheme": {
+          "enum": ["auto", "semver", "numeric", "date", "string"],
+          "default": "auto"
+        },
+        "version_pattern": {
+          "type": "string",
+          "format": "regex",
+          "description": "Group 1 extracts the comparable part of a version string."
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Catalogue ids installed before this application."
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/prerequisite" }
+        },
+        "detection": { "$ref": "#/$defs/detection" },
+        "windows": { "$ref": "#/$defs/windowsPayload" },
+        "macos": { "$ref": "#/$defs/macosPayload" }
+      },
+      "additionalProperties": false
+    },
+
+    "basePayload": {
+      "type": "object",
+      "required": ["installer", "type"],
+      "properties": {
+        "installer": {
+          "type": "string",
+          "description": "Repository-relative path. Absolute paths and '..' are rejected.",
+          "pattern": "^(?!/)(?![A-Za-z]:)(?!\\\\\\\\)(?!.*\\.\\.).+$"
+        },
+        "arguments": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ],
+          "description": "Passed as an argv vector; no shell is involved."
+        },
+        "architectures": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "x64", "x86_64", "amd64", "intel",
+              "x86", "i386", "i686", "win32",
+              "arm64", "aarch64", "apple_silicon"
+            ]
+          }
+        },
+        "requires_admin": { "type": "boolean" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-fA-F]{64}$" },
+        "timeout_seconds": { "type": "integer", "minimum": 1 },
+        "success_exit_codes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "integer" }
+        },
+        "detection": { "$ref": "#/$defs/detection" },
+        "post_install": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/postInstall" }
+        }
+      }
+    },
+
+    "windowsPayload": {
+      "allOf": [{ "$ref": "#/$defs/basePayload" }],
+      "properties": {
+        "type": { "enum": ["exe", "msi", "msix", "powershell"] }
+      }
+    },
+
+    "macosPayload": {
+      "allOf": [{ "$ref": "#/$defs/basePayload" }],
+      "properties": {
+        "type": { "enum": ["dmg", "pkg", "app", "shell"] },
+        "app_bundle": {
+          "type": "string",
+          "description": "The .app to copy out of a disk image or archive."
+        },
+        "destination": {
+          "type": "string",
+          "default": "/Applications"
+        },
+        "target": {
+          "type": "string",
+          "default": "/",
+          "description": "pkg only: the 'installer -target' volume."
+        }
+      }
+    },
+
+    "detection": {
+      "type": "object",
+      "required": ["method"],
+      "properties": {
+        "method": {
+          "enum": [
+            "none",
+            "windows_registry",
+            "windows_path",
+            "macos_app_bundle",
+            "macos_pkg_receipt",
+            "path_exists",
+            "command_version"
+          ]
+        },
+        "display_name": { "type": "string", "format": "regex" },
+        "product_code": { "type": "string" },
+        "publisher": { "type": "string", "format": "regex" },
+        "bundle": { "type": "string" },
+        "version_key": { "type": "string" },
+        "package_id": { "type": "string" },
+        "paths": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "version_from": { "enum": ["file_version"] },
+        "command": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "command[0] must be an absolute path; bare names are refused."
+        },
+        "pattern": { "type": "string", "format": "regex" },
+        "timeout_seconds": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "prerequisite": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": ["admin", "min_os_version", "min_free_disk_mb", "path_exists"]
+        },
+        "value": {},
+        "message": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+
+    "postInstall": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["script", "message"] },
+        "script": { "type": "string" },
+        "arguments": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "array", "items": { "type": "string" } }
+          ]
+        },
+        "message": { "type": "string" },
+        "timeout_seconds": { "type": "integer", "minimum": 1 }
+      },
+      "additionalProperties": false
+    }
+  }
+}
